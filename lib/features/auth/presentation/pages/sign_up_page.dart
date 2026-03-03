@@ -15,6 +15,46 @@ class SignUpPage extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final selectedRole = useState<UserRole>(UserRole.volunteer);
+    final isLoading = useState(false);
+
+    Future<void> handleSignUp() async {
+      if (nameController.text.isEmpty ||
+          emailController.text.isEmpty ||
+          passwordController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill in all fields')),
+        );
+        return;
+      }
+
+      isLoading.value = true;
+      try {
+        await ref.read(authProvider.notifier).signUp(
+              nameController.text,
+              emailController.text,
+              passwordController.text,
+              selectedRole.value,
+            );
+        if (context.mounted) context.go('/');
+      } on Exception catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()),
+              backgroundColor: const Color(0xFFE94560),
+            ),
+          );
+        }
+      } on Object catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('An unexpected error occurred')),
+          );
+        }
+      } finally {
+        if (context.mounted) isLoading.value = false;
+      }
+    }
 
     return AuthScaffold(
       title: 'Create Account',
@@ -44,6 +84,7 @@ class SignUpPage extends HookConsumerWidget {
           const SizedBox(height: 16),
           TextField(
             controller: emailController,
+            keyboardType: TextInputType.emailAddress,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               labelText: 'Email Address',
@@ -131,15 +172,7 @@ class SignUpPage extends HookConsumerWidget {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () async {
-                await ref.read(authProvider.notifier).signUp(
-                      nameController.text,
-                      emailController.text,
-                      passwordController.text,
-                      selectedRole.value,
-                    );
-                if (context.mounted) context.go('/');
-              },
+              onPressed: isLoading.value ? null : handleSignUp,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF00D2FF),
                 foregroundColor: Colors.white,
@@ -149,14 +182,23 @@ class SignUpPage extends HookConsumerWidget {
                 elevation: 8,
                 shadowColor: const Color(0xFF00D2FF).withValues(alpha: 0.5),
               ),
-              child: const Text(
-                "Let's Go",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.1,
-                ),
-              ),
+              child: isLoading.value
+                  ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text(
+                      "Let's Go",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
             ),
           ),
           const SizedBox(height: 24),

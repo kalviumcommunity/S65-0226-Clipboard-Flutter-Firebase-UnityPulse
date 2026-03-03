@@ -1,16 +1,53 @@
 import 'package:clipboard_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:clipboard_app/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SignInPage extends ConsumerWidget {
+class SignInPage extends HookConsumerWidget {
   const SignInPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final isLoading = useState(false);
+
+    Future<void> handleSignIn() async {
+      if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter both email and password')),
+        );
+        return;
+      }
+
+      isLoading.value = true;
+      try {
+        await ref.read(authProvider.notifier).signIn(
+              emailController.text,
+              passwordController.text,
+            );
+        if (context.mounted) context.go('/');
+      } on Exception catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()),
+              backgroundColor: const Color(0xFFE94560),
+            ),
+          );
+        }
+      } on Object catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('An unexpected error occurred')),
+          );
+        }
+      } finally {
+        if (context.mounted) isLoading.value = false;
+      }
+    }
 
     return AuthScaffold(
       title: 'Welcome Back',
@@ -18,6 +55,7 @@ class SignInPage extends ConsumerWidget {
         children: [
           TextField(
             controller: emailController,
+            keyboardType: TextInputType.emailAddress,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               labelText: 'Email Address',
@@ -65,13 +103,7 @@ class SignInPage extends ConsumerWidget {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () async {
-                await ref.read(authProvider.notifier).signIn(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                if (context.mounted) context.go('/');
-              },
+              onPressed: isLoading.value ? null : handleSignIn,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE94560),
                 foregroundColor: Colors.white,
@@ -81,14 +113,23 @@ class SignInPage extends ConsumerWidget {
                 elevation: 8,
                 shadowColor: const Color(0xFFE94560).withValues(alpha: 0.5),
               ),
-              child: const Text(
-                'Sign In',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.1,
-                ),
-              ),
+              child: isLoading.value
+                  ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
             ),
           ),
           const SizedBox(height: 24),

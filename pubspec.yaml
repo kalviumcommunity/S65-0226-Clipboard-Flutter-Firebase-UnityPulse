@@ -44,6 +44,11 @@ dependencies:
   json_annotation: ^4.9.0
   freezed_annotation: ^3.1.0
 
+  # Firebase
+  firebase_core: ^3.11.0
+  firebase_auth: ^5.5.0
+  cloud_firestore: ^5.6.3
+
   # Routing
   go_router: ^17.1.0
 
