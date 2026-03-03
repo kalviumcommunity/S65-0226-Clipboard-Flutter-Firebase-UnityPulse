@@ -7,11 +7,10 @@ part 'clipboard_provider.g.dart';
 
 @riverpod
 class ClipboardNotifier extends _$ClipboardNotifier {
-  late final ClipboardRepository _repository;
+  ClipboardRepository get _repository => getIt<ClipboardRepository>();
 
   @override
   Future<List<ClipboardItem>> build() async {
-    _repository = getIt<ClipboardRepository>();
     return _repository.getHistory();
   }
 
