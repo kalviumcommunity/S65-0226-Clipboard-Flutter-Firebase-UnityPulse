@@ -7,27 +7,20 @@ part 'clipboard_provider.g.dart';
 
 @riverpod
 class ClipboardNotifier extends _$ClipboardNotifier {
-  late final ClipboardRepository _repository;
+  ClipboardRepository get _repository => getIt<ClipboardRepository>();
 
   @override
-  Future<List<ClipboardItem>> build() async {
-    _repository = getIt<ClipboardRepository>();
-    return _repository.getHistory();
+  Stream<List<ClipboardItem>> build() {
+    return _repository.getHistoryStream();
   }
 
   Future<void> add(String text) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await _repository.addItem(text);
-      return _repository.getHistory();
-    });
+    // Note: We don't manually update state because 
+    // Firestore's Stream will push the update automatically.
+    await _repository.addItem(text);
   }
 
   Future<void> remove(String id) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await _repository.deleteItem(id);
-      return _repository.getHistory();
-    });
+    await _repository.deleteItem(id);
   }
 }
