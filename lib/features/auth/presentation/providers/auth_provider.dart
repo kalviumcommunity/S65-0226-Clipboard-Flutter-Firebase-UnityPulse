@@ -21,7 +21,7 @@ class AuthNotifier extends _$AuthNotifier {
       }
     });
 
-    ref.onDispose(() => subscription.cancel());
+    ref.onDispose(subscription.cancel);
 
     return null;
   }
@@ -68,5 +68,9 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 }

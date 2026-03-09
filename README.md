@@ -1,38 +1,58 @@
-# Clipboard App
+# UnityPulse
 
-A Flutter mobile application built with Clean Architecture and Production-Grade State Management.
+A premium NGO Task Management mobile application built with Flutter, Firebase, and Clean Architecture.
 
-## Tech Stack (2026 Optimized)
-- State Management: Riverpod 3.0 (Code-Gen)
-- DI: Injectable + Get_It
-- Routing: GoRouter
-- Persistence: Freezed (Immutable Models)
-- Platforms: iOS & Android Only
+## Features
 
-## Quick Start
+### Role-Based Experience
+- **Coordinators**: Create tasks, assign volunteers, manage global task pool, and monitor progress.
+- **Volunteers**: View personalized task lists, track deadlines, and update task status in real-time.
 
-Execute these short commands to build, launch emulators, and run:
+### Task Management
+- Real-time status tracking (🟡 **Pending**, 🔵 **In Progress**, 🟢 **Completed**).
+- Firebase Authentication with Role-Based Access Control (RBAC).
+- Cloud Firestore integration for instant synchronization.
+- Detailed task metrics and management dashboards.
 
-### Run on iOS
+### Premium Design
+- **Glassmorphism**: Modern UI with subtle blur and transparency effects.
+- **NGO Branding**: Dark-themed aesthetic tailored for professional NGO operations.
+- **Seamless UX**: High-performance navigation with GoRouter and Riverpod.
+
+## Tech Stack
+- **State Management**: Riverpod 3.0 (Code Generation)
+- **Backend**: Firebase Auth & Cloud Firestore
+- **UI Logic**: Flutter Hooks
+- **Navigation**: GoRouter
+- **Persistence**: Freezed (Immutable Data Models)
+
+## Getting Started
+
+Execute these commands to build and run:
+
+### Build & Run
 ```bash
+# Run on Android
+dart run rps android
+
+# Run on iOS
 dart run rps ios
 ```
 
-### Run on Android
-```bash
-dart run rps android
-```
+### Developer Utilities
+- **Code Gen**: `dart run rps build`
+- **Lint Check**: `dart run rps lint`
+- **Auto Format**: `dart run rps format`
 
-### Other Utils
-- Build Code: `dart run rps build` (Runs build_runner)
-- Live Watch: `dart run rps watch` (Auto-generate code on save)
-- Format Code: `dart run rps format` (Stylize code)
-- Auto Fix: `dart run rps fix` (Apply lint fixes)
-- Analyze: `dart run rps lint` (Run static analysis)
+## Clean Architecture
+Developed using a layered approach to ensure scalability:
+- `domain`: Core business logic and Entity definitions.
+- `data`: Infrastructure layer for Firebase interactions.
+## Team UnityPulse
 
-## Architecture
-- `lib/core`: Theme, Constants, and Base Utils.
-- `lib/features`: Highly modular feature-based structure.
-  - `domain`: Pure business logic and entity definitions.
-  - `data`: Repositories and external service implementations.
-  - `presentation`: UI components and Riverpod providers.
+- **Navaneeth M** (Contributor)
+- **Chaitanya Pawar** (Contributor)
+- **Rohit Kumar** (Lead Developer)
+
+---
+Developed with ❤️ for NGOs everywhere.
