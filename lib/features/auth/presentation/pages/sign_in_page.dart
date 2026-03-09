@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:clipboard_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:clipboard_app/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +99,16 @@ class SignInPage extends HookConsumerWidget {
               fillColor: Colors.white.withValues(alpha: 0.03),
             ),
           ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => _showForgotPasswordDialog(context, ref, emailController.text),
+              child: const Text(
+                'Forgot Password?',
+                style: TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+            ),
+          ),
           const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
@@ -155,5 +166,69 @@ class SignInPage extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _showForgotPasswordDialog(BuildContext context, WidgetRef ref, String initialEmail) {
+    final controller = TextEditingController(text: initialEmail);
+    unawaited(showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF16213E),
+        title: const Text('Reset Password', style: TextStyle(color: Colors.white)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Enter your email to receive a password reset link.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                labelText: 'Email Address',
+                labelStyle: TextStyle(color: Colors.white70),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (controller.text.isNotEmpty) {
+                try {
+                  await ref.read(authProvider.notifier).resetPassword(controller.text);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Password reset email sent!')),
+                    );
+                  }
+                } on Exception catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(e.toString())),
+                    );
+                  }
+                } on Object catch (_) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('An unexpected error occurred')),
+                    );
+                  }
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE94560)),
+            child: const Text('Send'),
+          ),
+        ],
+      ),
+    ));
   }
 }
