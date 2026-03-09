@@ -2,7 +2,10 @@ import 'package:clipboard_app/features/auth/presentation/pages/sign_in_page.dart
 import 'package:clipboard_app/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:clipboard_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:clipboard_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:clipboard_app/features/clipboard/presentation/pages/clipboard_page.dart';
+import 'package:clipboard_app/features/tasks/presentation/pages/create_task_page.dart';
+import 'package:clipboard_app/features/tasks/presentation/pages/dashboard_page.dart';
+import 'package:clipboard_app/features/tasks/presentation/pages/home_page.dart';
+import 'package:clipboard_app/features/tasks/presentation/pages/volunteers_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,7 +20,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthPage = state.uri.toString() == '/signin' ||
           state.uri.toString() == '/signup';
 
-      // Don't redirect if we are on splash screen
       if (isSplash) return null;
 
       if (!isLoggedIn && !isAuthPage) {
@@ -35,7 +37,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/',
-        builder: (context, state) => const ClipboardPage(),
+        builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        builder: (context, state) => const DashboardPage(),
+      ),
+      GoRoute(
+        path: '/tasks/create',
+        builder: (context, state) => const CreateTaskPage(),
+      ),
+      GoRoute(
+        path: '/volunteers',
+        builder: (context, state) => const VolunteersPage(),
       ),
       GoRoute(
         path: '/signin',
