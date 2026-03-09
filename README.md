@@ -48,4 +48,11 @@ dart run rps ios
 Developed using a layered approach to ensure scalability:
 - `domain`: Core business logic and Entity definitions.
 - `data`: Infrastructure layer for Firebase interactions.
-- `presentation`: Adaptive UI and State Management logic.
+## Team UnityPulse
+
+- **Navaneeth M** (Contributor)
+- **Chaitanya Pawar** (Contributor)
+- **Rohit Kumar** (Lead Developer)
+
+---
+Developed with ❤️ for NGOs everywhere.
