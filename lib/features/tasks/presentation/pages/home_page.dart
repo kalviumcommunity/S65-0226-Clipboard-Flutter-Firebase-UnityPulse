@@ -30,8 +30,12 @@ class HomePage extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () => ref.read(authProvider.notifier).signOut(),
-            icon: const Icon(Icons.logout_rounded, color: Colors.white70),
+            onPressed: () => context.push('/profile'),
+            icon: const Icon(Icons.account_circle_rounded, color: Colors.white70, size: 28),
+          ),
+          IconButton(
+            onPressed: () => context.push('/settings'),
+            icon: const Icon(Icons.settings_rounded, color: Colors.white70),
           ),
         ],
       ),
@@ -141,6 +145,14 @@ class HomePage extends ConsumerWidget {
           const Color(0xFFFDBB2D),
           () => context.push('/volunteers'),
         ),
+        const SizedBox(height: 12),
+        _buildActionButton(
+          context,
+          'My Profile',
+          Icons.person_rounded,
+          const Color(0xFF22C55E),
+          () => context.push('/profile'),
+        ),
       ],
     );
   }
@@ -175,6 +187,14 @@ class HomePage extends ConsumerWidget {
           Icons.view_list_rounded,
           const Color(0xFF22C55E),
           () => context.push('/dashboard'),
+        ),
+        const SizedBox(height: 12),
+        _buildActionButton(
+          context,
+          'My Profile',
+          Icons.person_rounded,
+          const Color(0xFF00D2FF),
+          () => context.push('/profile'),
         ),
       ],
     );
